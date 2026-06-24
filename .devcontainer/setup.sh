@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo ""
+echo "======================================"
+echo "  MasterOps AI — Codespace Setup"
+echo "======================================"
+echo ""
+echo "--> Installing npm dependencies..."
+npm install
+echo "    Done."
+echo ""
+echo "======================================"
+echo "  Setup complete."
+echo ""
+echo "  Next steps:"
+echo "  1. Confirm Supabase secrets are injected"
+echo "     (REQUIRED — app crashes without them):"
+echo "       echo \$NEXT_PUBLIC_SUPABASE_URL"
+echo "  2. Start the dev server:"
+echo "       npm run dev"
+echo "  3. Open port 3000 in the Ports tab."
+echo ""
+echo "  See CLOUD_WORKSPACE.md for the full"
+echo "  secrets list and feature availability."
+echo "======================================"
+echo ""

@@ -1,0 +1,7 @@
+# Ensure shell scripts always use LF line endings in the repository,
+# regardless of the OS where they are committed from.
+# This prevents "bad interpreter: bash^M" errors when running in Linux containers.
+*.sh text eol=lf
+
+# Standard normalisation for text files
+* text=auto
