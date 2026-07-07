@@ -14,23 +14,66 @@ import {
   Users,
   FileText,
   Settings,
+  LucideIcon,
 } from 'lucide-react'
 
-const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/projects', label: 'Projects', icon: FolderKanban },
-  { href: '/security', label: 'Security', icon: ShieldAlert },
-  { href: '/alerts', label: 'Alerts', icon: Bell },
-  { href: '/costs', label: 'Costs', icon: DollarSign },
-  { href: '/backups', label: 'Backups', icon: HardDrive },
-  { href: '/deployments', label: 'Deployments', icon: Rocket },
-  { href: '/leads', label: 'Leads', icon: Users },
-  { href: '/reports', label: 'Reports', icon: FileText },
-  { href: '/settings', label: 'Settings', icon: Settings },
+interface NavItem {
+  href: string
+  label: string
+  icon: LucideIcon
+}
+
+const overviewAnchor: NavItem = { href: '/dashboard', label: 'Enterprise Control Centre', icon: LayoutDashboard }
+
+const navGroups: { label: string; items: NavItem[] }[] = [
+  {
+    label: 'Portfolio & Risk',
+    items: [
+      { href: '/projects', label: 'Portfolio Registry', icon: FolderKanban },
+      { href: '/security', label: 'Enterprise Security Centre', icon: ShieldAlert },
+      { href: '/alerts', label: 'Enterprise Risk and Alert Centre', icon: Bell },
+    ],
+  },
+  {
+    label: 'Operations',
+    items: [
+      { href: '/costs', label: 'Enterprise Cost Intelligence', icon: DollarSign },
+      { href: '/backups', label: 'Enterprise Continuity', icon: HardDrive },
+      { href: '/deployments', label: 'Enterprise Release and Deployment Centre', icon: Rocket },
+    ],
+  },
+  {
+    label: 'Growth & Intelligence',
+    items: [
+      { href: '/leads', label: 'Enterprise Opportunity Intelligence', icon: Users },
+      { href: '/reports', label: 'Executive Intelligence', icon: FileText },
+    ],
+  },
 ]
+
+const configurationAnchor: NavItem = { href: '/settings', label: 'Enterprise Configuration', icon: Settings }
+
+function NavLink({ item, active }: { item: NavItem; active: boolean }) {
+  const Icon = item.icon
+  return (
+    <Link
+      href={item.href}
+      className={cn(
+        'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+        active
+          ? 'bg-indigo-600 text-white'
+          : 'text-gray-400 hover:text-white hover:bg-gray-800'
+      )}
+    >
+      <Icon size={16} />
+      {item.label}
+    </Link>
+  )
+}
 
 export function Sidebar() {
   const pathname = usePathname()
+  const isActive = (href: string) => pathname.startsWith(href)
 
   return (
     <aside className="w-64 min-h-screen bg-gray-900 text-white flex flex-col">
@@ -39,27 +82,30 @@ export function Sidebar() {
           <div className="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center text-sm font-bold">M</div>
           <div>
             <p className="text-sm font-bold leading-tight">MasterOps</p>
-            <p className="text-xs text-gray-400">AI Control Centre</p>
+            <p className="text-xs text-gray-400">Enterprise Platform</p>
           </div>
         </div>
       </div>
 
-      <nav className="flex-1 px-3 py-4 space-y-0.5">
-        {navItems.map(({ href, label, icon: Icon }) => (
-          <Link
-            key={href}
-            href={href}
-            className={cn(
-              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-              pathname.startsWith(href)
-                ? 'bg-indigo-600 text-white'
-                : 'text-gray-400 hover:text-white hover:bg-gray-800'
-            )}
-          >
-            <Icon size={16} />
-            {label}
-          </Link>
+      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+        <NavLink item={overviewAnchor} active={isActive(overviewAnchor.href)} />
+
+        {navGroups.map(group => (
+          <div key={group.label} className="pt-4">
+            <p className="px-3 pb-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-500">
+              {group.label}
+            </p>
+            {group.items.map(item => (
+              <NavLink key={item.href} item={item} active={isActive(item.href)} />
+            ))}
+          </div>
         ))}
+
+        <div className="pt-4 mt-1 border-t border-gray-800">
+          <div className="pt-3">
+            <NavLink item={configurationAnchor} active={isActive(configurationAnchor.href)} />
+          </div>
+        </div>
       </nav>
 
       <div className="px-4 py-4 border-t border-gray-800">

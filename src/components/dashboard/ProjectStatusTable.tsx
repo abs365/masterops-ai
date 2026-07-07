@@ -1,6 +1,11 @@
 import { createClient } from '@/lib/supabase/server'
 import { Project } from '@/types'
-import { statusColor, statusDot, formatMs, timeAgo } from '@/lib/utils'
+import { formatMs, timeAgo } from '@/lib/utils'
+import { Card, CardHeader } from '@/components/ui/Card'
+import { Table, TableHead, TableHeaderCell, TableBody, TableRow, TableCell } from '@/components/ui/Table'
+import { StatusBadge } from '@/components/ui/StatusBadge'
+import { EmptyState } from '@/components/ui/EmptyState'
+import { FolderKanban } from 'lucide-react'
 
 export async function ProjectStatusTable() {
   let projects: Project[] = []
@@ -14,39 +19,30 @@ export async function ProjectStatusTable() {
   } catch { /* supabase not configured */ }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200">
-      <div className="px-5 py-4 border-b border-gray-100">
-        <h3 className="text-sm font-semibold text-gray-900">Project Status</h3>
-      </div>
+    <Card padded={false}>
+      <CardHeader title="Portfolio Status" />
       {projects.length === 0 ? (
-        <div className="px-5 py-8 text-center text-sm text-gray-400">No projects yet — run the Supabase migration</div>
+        <EmptyState icon={FolderKanban} message="No projects yet — run the Supabase migration to seed your portfolio." />
       ) : (
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-xs text-gray-400 border-b border-gray-100">
-              <th className="px-5 py-2 text-left font-medium">Project</th>
-              <th className="px-5 py-2 text-left font-medium">Status</th>
-              <th className="px-5 py-2 text-left font-medium">Response</th>
-              <th className="px-5 py-2 text-left font-medium">Checked</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-50">
+        <Table>
+          <TableHead>
+            <TableHeaderCell>Project</TableHeaderCell>
+            <TableHeaderCell>Status</TableHeaderCell>
+            <TableHeaderCell>Response</TableHeaderCell>
+            <TableHeaderCell>Checked</TableHeaderCell>
+          </TableHead>
+          <TableBody>
             {projects.map(p => (
-              <tr key={p.id}>
-                <td className="px-5 py-3 font-medium text-gray-800">{p.name}</td>
-                <td className="px-5 py-3">
-                  <span className={`inline-flex items-center gap-1.5 text-xs px-2 py-0.5 rounded-full border font-medium ${statusColor(p.status)}`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${statusDot(p.status)}`} />
-                    {p.status}
-                  </span>
-                </td>
-                <td className="px-5 py-3 text-gray-500">{formatMs(p.response_time_ms)}</td>
-                <td className="px-5 py-3 text-gray-400">{timeAgo(p.last_checked_at)}</td>
-              </tr>
+              <TableRow key={p.id}>
+                <TableCell className="font-medium text-gray-800">{p.name}</TableCell>
+                <TableCell><StatusBadge status={p.status} /></TableCell>
+                <TableCell>{formatMs(p.response_time_ms)}</TableCell>
+                <TableCell className="text-gray-400">{timeAgo(p.last_checked_at)}</TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       )}
-    </div>
+    </Card>
   )
 }

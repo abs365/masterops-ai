@@ -3,16 +3,16 @@
 import { usePathname } from 'next/navigation'
 
 const titles: Record<string, string> = {
-  '/dashboard': 'Dashboard',
-  '/projects': 'Projects',
-  '/security': 'Security Centre',
-  '/alerts': 'Alerts',
-  '/costs': 'Cost Monitoring',
-  '/backups': 'Backups',
-  '/deployments': 'Deployments',
-  '/leads': 'Lead Generation',
-  '/reports': 'Reports',
-  '/settings': 'Settings',
+  '/dashboard': 'Enterprise Control Centre',
+  '/projects': 'Portfolio Registry',
+  '/security': 'Enterprise Security Centre',
+  '/alerts': 'Enterprise Risk and Alert Centre',
+  '/costs': 'Enterprise Cost Intelligence',
+  '/backups': 'Enterprise Continuity',
+  '/deployments': 'Enterprise Release and Deployment Centre',
+  '/leads': 'Enterprise Opportunity Intelligence',
+  '/reports': 'Executive Intelligence',
+  '/settings': 'Enterprise Configuration',
 }
 
 export function Header() {

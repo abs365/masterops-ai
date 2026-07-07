@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils'
 import { LucideIcon } from 'lucide-react'
+import { Card } from '@/components/ui/Card'
 
 interface StatCardProps {
   title: string
@@ -19,7 +20,7 @@ const colorMap = {
 
 export function StatCard({ title, value, icon: Icon, color = 'default', sub }: StatCardProps) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5">
+    <Card>
       <div className="flex items-start justify-between">
         <div>
           <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{title}</p>
@@ -30,6 +31,6 @@ export function StatCard({ title, value, icon: Icon, color = 'default', sub }: S
           <Icon size={18} />
         </div>
       </div>
-    </div>
+    </Card>
   )
 }
