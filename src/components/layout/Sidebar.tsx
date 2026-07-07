@@ -29,7 +29,7 @@ const navGroups: { label: string; items: NavItem[] }[] = [
   {
     label: 'Portfolio & Risk',
     items: [
-      { href: '/projects', label: 'Portfolio Registry', icon: FolderKanban },
+      { href: '/projects', label: 'Portfolio', icon: FolderKanban },
       { href: '/security', label: 'Security Centre', icon: ShieldAlert },
       { href: '/alerts', label: 'Risk & Alerts', icon: Bell },
     ],
