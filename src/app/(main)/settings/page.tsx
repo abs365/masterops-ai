@@ -1,4 +1,5 @@
-import { CheckCircle, XCircle, ExternalLink } from 'lucide-react'
+import { CheckCircle, XCircle } from 'lucide-react'
+import { ManualTestLink } from '@/components/settings/ManualTestLink'
 
 export const dynamic = 'force-dynamic'
 
@@ -49,7 +50,7 @@ const MANUAL_TESTS = [
   { label: 'Check deployment status',   href: '/api/deployments/status',      method: 'GET',  desc: 'Fetches latest Vercel deployment per project' },
   { label: 'Check GitHub status',       href: '/api/deployments/github-status', method: 'GET', desc: 'Fetches latest CI run per GitHub repo' },
   { label: 'Check backup status',       href: '/api/backups/status',          method: 'GET',  desc: 'Returns backup configuration per project' },
-]
+] as const
 
 const groups = [...new Set(ENV_VARS.map(v => v.group))]
 
@@ -127,20 +128,11 @@ export default function SettingsPage() {
                 <p className="text-sm font-medium text-gray-900">{t.label}</p>
                 <p className="text-xs text-gray-400">{t.desc}</p>
               </div>
-              <a
-                href={t.method === 'GET' ? t.href : undefined}
-                onClick={t.method === 'POST' ? async (e) => {
-                  e.preventDefault()
-                  await fetch(t.href, { method: 'POST' })
-                  window.location.reload()
-                } : undefined}
-                className="inline-flex items-center gap-1.5 text-xs text-indigo-600 hover:text-indigo-800 px-3 py-1.5 rounded-lg border border-indigo-200 hover:bg-indigo-50 transition-colors"
-                target={t.method === 'GET' ? '_blank' : undefined}
-                rel="noreferrer"
-              >
-                <ExternalLink size={11} />
-                {t.method} {t.href.split('/').slice(-1)[0]}
-              </a>
+              <ManualTestLink
+                href={t.href}
+                method={t.method}
+                label={`${t.method} ${t.href.split('/').slice(-1)[0]}`}
+              />
             </div>
           ))}
         </div>
