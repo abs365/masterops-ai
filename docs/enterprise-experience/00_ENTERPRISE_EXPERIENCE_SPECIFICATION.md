@@ -1,7 +1,7 @@
 # MasterOps Enterprise Experience Specification
 
 **Work Package:** D-001 — Enterprise Experience Foundation
-**Status:** Design package — awaiting Enterprise Programme Director review and approval. Not implemented.
+**Status:** Design package approved. Implemented under D-002 and refined under D-002A (see §8) — both live in production.
 **Subject:** `masterops-ai` UX/experience layer only. No business logic, database, integration, or routing change is proposed or implied.
 **Explicitly out of scope:** Master Growth OS (not touched, not redesigned, not referenced as a dependency).
 
@@ -65,6 +65,17 @@ The proposed design must:
 
 This package is complete and ready for Enterprise Programme Director review as a whole — the six companion documents plus the visual reference mockup referenced in `06_IMPLEMENTATION_PLAN.md`. Approval of D-001 authorises nothing beyond itself; implementation begins only under a separately approved work package (see `06_IMPLEMENTATION_PLAN.md` §Sequencing).
 
+## 8. Implementation & Evidence Log
+
+The design package above (§3) was approved and implemented. Each implementation and refinement work package has its own Evidence Package, kept alongside the design docs in this folder:
+
+| Document | Work package | Covers |
+|---|---|---|
+| `D-002_EVIDENCE_PACKAGE.md` | D-002 — Enterprise Experience Implementation | Dashboard, sidebar, and design-system primitives built and deployed to production |
+| `D-002A_EVIDENCE_PACKAGE.md` | D-002A — Sidebar label refinement | Drops the redundant "Enterprise" prefix from sidebar labels and renames "Portfolio Registry" to "Portfolio," deployed to production |
+
+This log is updated as each subsequent D-series work package closes out.
+
 ---
 
-**This document is a design specification. No code has been changed, no route has been modified, and no production system has been touched.**
+**This document is a design specification; it does not itself change code. Implementation occurred separately under D-002 and D-002A (§8) — routes were never modified in either; see the linked Evidence Packages for what changed in production.**
