@@ -23,35 +23,35 @@ interface NavItem {
   icon: LucideIcon
 }
 
-const overviewAnchor: NavItem = { href: '/dashboard', label: 'Enterprise Control Centre', icon: LayoutDashboard }
+const overviewAnchor: NavItem = { href: '/dashboard', label: 'Control Centre', icon: LayoutDashboard }
 
 const navGroups: { label: string; items: NavItem[] }[] = [
   {
     label: 'Portfolio & Risk',
     items: [
       { href: '/projects', label: 'Portfolio Registry', icon: FolderKanban },
-      { href: '/security', label: 'Enterprise Security Centre', icon: ShieldAlert },
-      { href: '/alerts', label: 'Enterprise Risk and Alert Centre', icon: Bell },
+      { href: '/security', label: 'Security Centre', icon: ShieldAlert },
+      { href: '/alerts', label: 'Risk & Alerts', icon: Bell },
     ],
   },
   {
     label: 'Operations',
     items: [
-      { href: '/costs', label: 'Enterprise Cost Intelligence', icon: DollarSign },
-      { href: '/backups', label: 'Enterprise Continuity', icon: HardDrive },
-      { href: '/deployments', label: 'Enterprise Release and Deployment Centre', icon: Rocket },
+      { href: '/costs', label: 'Cost Intelligence', icon: DollarSign },
+      { href: '/backups', label: 'Continuity', icon: HardDrive },
+      { href: '/deployments', label: 'Release & Deployments', icon: Rocket },
     ],
   },
   {
     label: 'Growth & Intelligence',
     items: [
-      { href: '/leads', label: 'Enterprise Opportunity Intelligence', icon: Users },
+      { href: '/leads', label: 'Opportunity Intelligence', icon: Users },
       { href: '/reports', label: 'Executive Intelligence', icon: FileText },
     ],
   },
 ]
 
-const configurationAnchor: NavItem = { href: '/settings', label: 'Enterprise Configuration', icon: Settings }
+const configurationAnchor: NavItem = { href: '/settings', label: 'Configuration', icon: Settings }
 
 function NavLink({ item, active }: { item: NavItem; active: boolean }) {
   const Icon = item.icon
