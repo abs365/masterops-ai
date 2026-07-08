@@ -1,6 +1,7 @@
 import { getDashboardStats } from '@/lib/dashboard-stats'
 import { getVercelData } from '@/lib/deployment-status'
 import { getEnterpriseProfileByName } from '@/lib/enterprise-registry'
+import { getPortfolioWorkspace } from '@/lib/portfolio-workspace'
 
 export interface FounderQueueItem {
   title: string
@@ -11,7 +12,7 @@ export interface FounderQueueItem {
 
 export async function getFounderActionQueue(): Promise<FounderQueueItem[]> {
   const items: FounderQueueItem[] = []
-  const [stats, vercel] = await Promise.all([getDashboardStats(), getVercelData()])
+  const [stats, vercel, portfolio] = await Promise.all([getDashboardStats(), getVercelData(), getPortfolioWorkspace()])
 
   if (stats.down > 0) {
     items.push({
@@ -57,6 +58,33 @@ export async function getFounderActionQueue(): Promise<FounderQueueItem[]> {
   }
   if (!process.env.SUPABASE_ACCESS_TOKEN || !process.env.SUPABASE_ORG_ID) {
     items.push({ title: 'Automated backup checks not configured', detail: 'Set SUPABASE_ACCESS_TOKEN and SUPABASE_ORG_ID to verify backups automatically.', severity: 'info', href: '/backups' })
+  }
+
+  for (const card of portfolio.cards) {
+    if (!card.project) continue
+    const businessName = card.profile.businessName
+
+    if (!card.project.vercel_project_id || !card.project.github_repo) {
+      items.push({
+        title: `Environment configuration required — ${businessName}`,
+        detail: !card.project.vercel_project_id && !card.project.github_repo
+          ? 'No Vercel project or GitHub repository linked yet.'
+          : !card.project.vercel_project_id
+          ? 'No Vercel project linked yet.'
+          : 'No GitHub repository linked yet.',
+        severity: 'warning',
+        href: '/projects',
+      })
+    }
+
+    if (!card.profile.documentationLocation) {
+      items.push({
+        title: `Documentation review required — ${businessName}`,
+        detail: 'No documentation location is recorded in the Enterprise Registry for this business yet.',
+        severity: 'info',
+        href: '/projects',
+      })
+    }
   }
 
   return items

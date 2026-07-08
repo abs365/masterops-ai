@@ -1,12 +1,45 @@
 import Link from 'next/link'
-import { Rocket } from 'lucide-react'
+import { Rocket, GitBranch } from 'lucide-react'
 import { Card, CardHeader } from '@/components/ui/Card'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { timeAgo } from '@/lib/utils'
-import { getVercelData } from '@/lib/deployment-status'
+import { getVercelData, getGitHubData } from '@/lib/deployment-status'
+
+function RepositoryStatus({ github }: { github: Awaited<ReturnType<typeof getGitHubData>> }) {
+  if (!github.configured) {
+    return (
+      <div className="px-5 py-3 border-t border-gray-100 text-xs text-gray-400">
+        Repository Status: {github.message ?? 'GitHub is not connected.'}
+      </div>
+    )
+  }
+
+  const withRepo = github.projects.filter(p => p.repo)
+  if (withRepo.length === 0) {
+    return (
+      <div className="px-5 py-3 border-t border-gray-100 text-xs text-gray-400">
+        Repository Status: {github.message ?? 'No projects have a repository configured yet.'}
+      </div>
+    )
+  }
+
+  const passing = withRepo.filter(p => p.workflow?.conclusion === 'success').length
+  const failing = withRepo.filter(p => p.workflow?.conclusion === 'failure').length
+
+  return (
+    <div className="px-5 py-3 border-t border-gray-100 space-y-1.5">
+      <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400">Repository Status</p>
+      <div className="flex items-center gap-4 text-xs text-gray-600">
+        <span className="inline-flex items-center gap-1"><GitBranch size={12} /> {withRepo.length} tracked</span>
+        <span className={passing > 0 ? 'text-green-600' : 'text-gray-400'}>{passing} CI passing</span>
+        <span className={failing > 0 ? 'text-red-600 font-medium' : 'text-gray-400'}>{failing} CI failing</span>
+      </div>
+    </div>
+  )
+}
 
 export async function DeploymentSummary() {
-  const vercel = await getVercelData()
+  const [vercel, github] = await Promise.all([getVercelData(), getGitHubData()])
   const action = (
     <Link href="/deployments" className="text-xs text-indigo-600 hover:underline whitespace-nowrap">
       Full Release &amp; Deployment Centre →
@@ -18,6 +51,7 @@ export async function DeploymentSummary() {
       <Card padded={false}>
         <CardHeader title="Deployment Summary" action={action} />
         <EmptyState icon={Rocket} message={vercel.message ?? 'Vercel is not connected.'} />
+        <RepositoryStatus github={github} />
       </Card>
     )
   }
@@ -29,6 +63,7 @@ export async function DeploymentSummary() {
       <Card padded={false}>
         <CardHeader title="Deployment Summary" action={action} />
         <EmptyState icon={Rocket} message={vercel.message ?? 'No deployments found yet.'} />
+        <RepositoryStatus github={github} />
       </Card>
     )
   }
@@ -64,6 +99,7 @@ export async function DeploymentSummary() {
         )}
         <p className="text-[11px] text-gray-300">Showing the latest known deployment per project, not full history.</p>
       </div>
+      <RepositoryStatus github={github} />
     </Card>
   )
 }
