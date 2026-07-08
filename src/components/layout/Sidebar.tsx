@@ -15,6 +15,7 @@ import {
   Users,
   FileText,
   Settings,
+  Layers,
   LucideIcon,
 } from 'lucide-react'
 
@@ -42,6 +43,12 @@ const navGroups: { label: string; items: NavItem[] }[] = [
       { href: '/costs', label: 'Cost Intelligence', icon: DollarSign },
       { href: '/backups', label: 'Continuity', icon: HardDrive },
       { href: '/deployments', label: 'Release & Deployments', icon: Rocket },
+    ],
+  },
+  {
+    label: 'Shared Services',
+    items: [
+      { href: '/shared-services', label: 'Shared Services', icon: Layers },
     ],
   },
   {

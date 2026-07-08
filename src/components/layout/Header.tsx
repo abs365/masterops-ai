@@ -11,6 +11,7 @@ const titles: Record<string, string> = {
   '/costs': 'Enterprise Cost Intelligence',
   '/backups': 'Enterprise Continuity',
   '/deployments': 'Enterprise Release and Deployment Centre',
+  '/shared-services': 'Enterprise Shared Services',
   '/leads': 'Enterprise Opportunity Intelligence',
   '/reports': 'Executive Intelligence',
   '/settings': 'Enterprise Configuration',
