@@ -8,6 +8,7 @@ import {
   FolderKanban,
   ShieldAlert,
   Bell,
+  Activity,
   DollarSign,
   HardDrive,
   Rocket,
@@ -37,6 +38,7 @@ const navGroups: { label: string; items: NavItem[] }[] = [
   {
     label: 'Operations',
     items: [
+      { href: '/operations', label: 'Operations Centre', icon: Activity },
       { href: '/costs', label: 'Cost Intelligence', icon: DollarSign },
       { href: '/backups', label: 'Continuity', icon: HardDrive },
       { href: '/deployments', label: 'Release & Deployments', icon: Rocket },

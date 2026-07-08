@@ -7,6 +7,7 @@ const titles: Record<string, string> = {
   '/projects': 'Portfolio Workspace',
   '/security': 'Enterprise Security Centre',
   '/alerts': 'Enterprise Risk and Alert Centre',
+  '/operations': 'Enterprise Operations Centre',
   '/costs': 'Enterprise Cost Intelligence',
   '/backups': 'Enterprise Continuity',
   '/deployments': 'Enterprise Release and Deployment Centre',

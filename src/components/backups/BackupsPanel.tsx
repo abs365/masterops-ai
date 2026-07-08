@@ -1,19 +1,6 @@
-import { createClient } from '@/lib/supabase/server'
 import { HardDrive, CheckCircle, AlertCircle, HelpCircle } from 'lucide-react'
 import { timeAgo } from '@/lib/utils'
-
-async function getBackupData() {
-  const configured = !!(process.env.SUPABASE_ACCESS_TOKEN && process.env.SUPABASE_ORG_ID)
-
-  let projects: Array<{ name: string; slug: string; supabase_project_id: string | null }> = []
-  try {
-    const supabase = await createClient()
-    const { data } = await supabase.from('projects').select('name, slug, supabase_project_id').order('name')
-    projects = data ?? []
-  } catch { /* not connected */ }
-
-  return { configured, projects }
-}
+import { getBackupData } from '@/lib/backup-status'
 
 function BackupStatusIcon({ status }: { status: string }) {
   if (status === 'available') return <CheckCircle size={14} className="text-green-500" />
