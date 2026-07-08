@@ -1,20 +1,18 @@
 import { createClient } from '@/lib/supabase/server'
 import { Project } from '@/types'
-import { ENTERPRISE_ROSTER } from '@/lib/enterprise-roster'
-import { BusinessStage, businessStageFor } from '@/lib/enterprise-stage-config'
+import { ENTERPRISE_REGISTRY, EnterpriseProfile } from '@/lib/enterprise-registry'
 
 export type MasterOpsStatus = 'Connected' | 'Partially Connected' | 'Not Connected'
 
 /** Operational read for the Portfolio Summary tiles only -- derived from
  * MasterOps connection + health, same as before. Distinct from Business
  * Stage, which is never derived from connectivity (see
- * enterprise-stage-config.ts). */
+ * enterprise-registry.ts). */
 export type OperationalBucket = 'Active' | 'Attention' | 'Planning'
 
 export interface EnterpriseCardData {
-  name: string
+  profile: EnterpriseProfile
   project: Project | null
-  businessStage: BusinessStage
   masterOpsStatus: MasterOpsStatus
   operationalBucket: OperationalBucket
 }
@@ -48,11 +46,34 @@ function operationalBucketFor(project: Project | null): OperationalBucket {
   return 'Active'
 }
 
-function buildCard(name: string, project: Project | null): EnterpriseCardData {
+/** Minimal, clearly-labelled profile for a live `projects` row that has no
+ * matching Enterprise Registry entry yet -- preserves D-004's original
+ * behaviour of still showing the card, without inventing registry data
+ * for a business the Founder hasn't added to the registry. */
+function unregisteredProfile(name: string): EnterpriseProfile {
   return {
-    name,
+    slug: normalize(name),
+    businessName: name,
+    shortDescription: 'Not yet added to the Enterprise Registry.',
+    businessStage: 'Unspecified',
+    businessOwner: null,
+    primaryWebsite: null,
+    productionUrl: null,
+    developmentUrl: null,
+    gitRepository: null,
+    documentationLocation: null,
+    primaryContact: null,
+    supportContact: null,
+    businessCategory: null,
+    dateAdded: '',
+    lastReviewed: '',
+  }
+}
+
+function buildCard(profile: EnterpriseProfile, project: Project | null): EnterpriseCardData {
+  return {
+    profile,
     project,
-    businessStage: businessStageFor(name),
     masterOpsStatus: masterOpsStatusFor(project),
     operationalBucket: operationalBucketFor(project),
   }
@@ -72,17 +93,17 @@ export async function getPortfolioWorkspace(): Promise<PortfolioWorkspaceData> {
   const projects = await getRegisteredProjects()
   const matched = new Set<string>()
 
-  const rosterCards: EnterpriseCardData[] = ENTERPRISE_ROSTER.map(name => {
-    const project = projects.find(p => normalize(p.name) === normalize(name)) ?? null
+  const registryCards: EnterpriseCardData[] = ENTERPRISE_REGISTRY.map(profile => {
+    const project = projects.find(p => normalize(p.name) === normalize(profile.businessName)) ?? null
     if (project) matched.add(project.id)
-    return buildCard(name, project)
+    return buildCard(profile, project)
   })
 
   const extraCards: EnterpriseCardData[] = projects
     .filter(p => !matched.has(p.id))
-    .map(project => buildCard(project.name, project))
+    .map(project => buildCard(unregisteredProfile(project.name), project))
 
-  const cards = [...rosterCards, ...extraCards]
+  const cards = [...registryCards, ...extraCards]
 
   const summary: PortfolioSummaryData = {
     total: cards.length,

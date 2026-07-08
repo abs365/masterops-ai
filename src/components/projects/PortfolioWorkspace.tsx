@@ -10,7 +10,7 @@ export async function PortfolioWorkspace() {
       <PortfolioSummary summary={summary} />
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         {cards.map(card => (
-          <EnterpriseCard key={card.name} card={card} />
+          <EnterpriseCard key={card.profile.slug} card={card} />
         ))}
       </div>
     </div>

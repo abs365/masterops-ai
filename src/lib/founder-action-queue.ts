@@ -1,5 +1,6 @@
 import { getDashboardStats } from '@/lib/dashboard-stats'
 import { getVercelData } from '@/lib/deployment-status'
+import { getEnterpriseProfileByName } from '@/lib/enterprise-registry'
 
 export interface FounderQueueItem {
   title: string
@@ -30,9 +31,13 @@ export async function getFounderActionQueue(): Promise<FounderQueueItem[]> {
 
   const failedDeployments = vercel.deployments.filter(d => d.deployment?.state === 'ERROR')
   if (failedDeployments.length > 0) {
+    const named = failedDeployments.map(d => {
+      const owner = getEnterpriseProfileByName(d.project_name)?.businessOwner
+      return owner ? `${d.project_name} (Owner: ${owner})` : d.project_name
+    })
     items.push({
       title: `${failedDeployments.length} failed deployment${failedDeployments.length === 1 ? '' : 's'}`,
-      detail: failedDeployments.map(d => d.project_name).join(', '),
+      detail: named.join(', '),
       severity: 'critical',
       href: '/deployments',
     })

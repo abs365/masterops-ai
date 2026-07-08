@@ -19,12 +19,15 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 export function EnterpriseCard({ card }: { card: EnterpriseCardData }) {
-  const { name, project, businessStage, masterOpsStatus } = card
+  const { profile, project, masterOpsStatus } = card
+  const { businessName, businessStage, shortDescription } = profile
   const isStageSet = businessStage !== 'Unspecified'
+  const workspaceUrl = project?.url ?? profile.productionUrl
 
   return (
     <Card className="flex flex-col h-full">
-      <h3 className="text-base font-semibold text-gray-900 truncate" title={name}>{name}</h3>
+      <h3 className="text-base font-semibold text-gray-900 truncate" title={businessName}>{businessName}</h3>
+      {shortDescription && <p className="text-xs text-gray-400 mt-1 line-clamp-2">{shortDescription}</p>}
 
       <div className="mt-3 grid grid-cols-2 gap-3">
         <Field label="Business Stage">
@@ -57,9 +60,9 @@ export function EnterpriseCard({ card }: { card: EnterpriseCardData }) {
       </div>
 
       <div className="mt-4 pt-4 border-t border-gray-100 flex-1 flex items-end">
-        {project?.url ? (
+        {workspaceUrl ? (
           <a
-            href={project.url}
+            href={workspaceUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
