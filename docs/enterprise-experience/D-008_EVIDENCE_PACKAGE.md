@@ -63,7 +63,7 @@ Commit `91513f9` — 12 files changed, 419 insertions(+) (pre-existing, unrelate
 
 ## 5. Commit Hash
 
-`91513f9` — `feat: implement D-008 Enterprise Multi-Channel Delivery Programme`, on branch `main`, **committed locally, not yet pushed to `origin/main`** (see §7).
+`91513f9` — `feat: implement D-008 Enterprise Multi-Channel Delivery Programme`, on branch `main`, pushed to `origin/main` (`6a6f4b7..0c42e54`, includes the `docs:` evidence commit `0c42e54`).
 
 ## 6. Local Verification
 
@@ -75,7 +75,12 @@ Ran `npm run dev` and curled the affected and adjacent routes:
 
 ## 7. Production Deployment Verification
 
-**Not yet deployed.** Committed locally to `main` (`91513f9`) but **not pushed to `origin/main`**, pending Founder confirmation before pushing/deploying — consistent with the platform's practice of confirming before actions that affect shared/production state. No production verification has been performed for this package yet; will be added once pushed and Vercel has deployed.
+**Deployed and confirmed.** Founder approved the push; pushed to `origin/main`, Vercel auto-deployed.
+
+- **URL:** https://masterops-ai.vercel.app/delivery
+- `HTTP/1.1 200`, `X-Matched-Path: /delivery`, `X-Vercel-Cache: MISS`, `Age: 0` — a fresh dynamic render, not a stale cached asset
+- Content check on the live HTML confirms all 7 products, the 49/1/48 Readiness Dashboard stats, and the exact same `title` attribute split (1 cell backed by ELBOLD's real `productionUrl`, 48 cells honestly marked "not yet assessed under D-008") as local verification
+- Spot-checked `/projects`, `/operations`, `/shared-services` on production (all 200) — no regression
 
 ## 8. Confirmation: No Business Logic Changed
 
