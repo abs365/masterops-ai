@@ -60,11 +60,18 @@ Ran `npm run dev` and curled all 6 relevant routes:
 
 ## 5. Commit Hash
 
-`69a3b22` — `feat: implement EOP-001 Enterprise Operations Phase 1`, on branch `main`, committed locally, not yet pushed to `origin/main` (pending Founder confirmation before pushing/deploying, per standing practice — see §6).
+`69a3b22` — `feat: implement EOP-001 Enterprise Operations Phase 1`, on branch `main`, pushed to `origin/main` (`06c013a..5be788a`, includes the `docs:` evidence commit `5be788a`).
 
 ## 6. Production Deployment Verification
 
-**Not yet deployed.** Awaiting Founder confirmation before push, consistent with D-008's practice of confirming before actions affecting shared/production state. Will be added once pushed and Vercel has deployed.
+**Deployed and confirmed.** Founder approved the push; pushed to `origin/main`, Vercel auto-deployed.
+
+- **URLs:** https://masterops-ai.vercel.app/dashboard, /projects, /reports
+- `/dashboard` → `HTTP/1.1 200`, `X-Matched-Path: /dashboard`, `X-Vercel-Cache: MISS`, `Age: 0` — a fresh dynamic render
+- Content check confirms "Enterprise KPIs" and "Daily Founder Queue" on `/dashboard`, with identical values to local verification (7 / 31% / 1 of 49 / 4 of 8 / 16 / 0)
+- "Enterprise Product Onboarding" confirmed on `/projects` with all 7 products
+- "Monthly Enterprise Review — July 2026" confirmed on `/reports`
+- Spot-checked `/operations`, `/delivery`, `/shared-services` on production (all 200) — no regression
 
 ## 7. Confirmation: No Business Logic Changed
 
