@@ -139,6 +139,23 @@ export const ENTERPRISE_REGISTRY: EnterpriseProfile[] = [
     dateAdded: '2026-07-08',
     lastReviewed: '2026-07-08',
   },
+  {
+    slug: 'angel-digital',
+    businessName: 'Angel Digital',
+    shortDescription: null,
+    businessStage: 'Unspecified',
+    businessOwner: null,
+    primaryWebsite: null,
+    productionUrl: null,
+    developmentUrl: null,
+    gitRepository: null,
+    documentationLocation: null,
+    primaryContact: null,
+    supportContact: null,
+    businessCategory: null,
+    dateAdded: '2026-07-15',
+    lastReviewed: '2026-07-15',
+  },
 ]
 
 function normalize(value: string): string {

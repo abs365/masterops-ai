@@ -16,6 +16,7 @@ import {
   FileText,
   Settings,
   Layers,
+  PackageCheck,
   LucideIcon,
 } from 'lucide-react'
 
@@ -49,6 +50,12 @@ const navGroups: { label: string; items: NavItem[] }[] = [
     label: 'Shared Services',
     items: [
       { href: '/shared-services', label: 'Shared Services', icon: Layers },
+    ],
+  },
+  {
+    label: 'Delivery',
+    items: [
+      { href: '/delivery', label: 'Delivery Centre', icon: PackageCheck },
     ],
   },
   {
