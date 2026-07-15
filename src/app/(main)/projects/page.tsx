@@ -1,5 +1,6 @@
 import { PortfolioWorkspace } from '@/components/projects/PortfolioWorkspace'
 import { RunCheckButton } from '@/components/projects/RunCheckButton'
+import { OnboardingProgress } from '@/components/projects/OnboardingProgress'
 
 export default function ProjectsPage() {
   return (
@@ -12,6 +13,7 @@ export default function ProjectsPage() {
         <RunCheckButton />
       </div>
       <PortfolioWorkspace />
+      <OnboardingProgress />
     </div>
   )
 }

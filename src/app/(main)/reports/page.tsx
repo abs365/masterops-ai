@@ -1,5 +1,6 @@
 import { GenerateReportButton } from '@/components/reports/GenerateReportButton'
 import { ReportCard } from '@/components/reports/ReportCard'
+import { MonthlyEnterpriseReview } from '@/components/reports/MonthlyEnterpriseReview'
 import { createClient } from '@/lib/supabase/server'
 import { DailyReport } from '@/types'
 
@@ -50,6 +51,8 @@ export default async function ReportsPage() {
           Add <code className="font-mono text-xs bg-blue-100 px-1 rounded">OPENAI_API_KEY</code> or <code className="font-mono text-xs bg-blue-100 px-1 rounded">ANTHROPIC_API_KEY</code> to unlock AI-written business summaries. Template reports are used until then.
         </div>
       )}
+
+      <MonthlyEnterpriseReview />
 
       <div className="space-y-4">
         {displayReports.map((report, i) => (
