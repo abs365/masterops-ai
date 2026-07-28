@@ -1,3 +1,5 @@
+export * from './enterprise-assets'
+
 export type ProjectStatus = 'online' | 'slow' | 'warning' | 'down' | 'unknown'
 export type AlertSeverity = 'info' | 'warning' | 'critical' | 'emergency'
 export type AlertStatus = 'open' | 'acknowledged' | 'resolved'
