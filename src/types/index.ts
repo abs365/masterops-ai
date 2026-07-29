@@ -1,5 +1,6 @@
 export * from './enterprise-assets'
 export * from './enterprise-identities'
+export * from './enterprise-api-security'
 
 export type ProjectStatus = 'online' | 'slow' | 'warning' | 'down' | 'unknown'
 export type AlertSeverity = 'info' | 'warning' | 'critical' | 'emergency'

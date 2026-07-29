@@ -4,6 +4,9 @@
 // getAsset() also resolves createServiceClient() through this same mock,
 // the fake's `assets` array doubles as the EA-001 read-only stand-in for
 // link-asset tests below.
+//
+// EA-003's auth guard is stubbed here too, for the same isolation reason as
+// EA-001's own routes.test.ts — see that file's header comment.
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { NextRequest } from 'next/server'
 import { FakeEnterpriseIdentityDb } from '@/lib/enterprise-identities/__tests__/fake-db-client'
@@ -12,6 +15,12 @@ let fake: FakeEnterpriseIdentityDb
 
 vi.mock('@/lib/supabase/server', () => ({
   createServiceClient: async () => fake,
+}))
+
+vi.mock('@/lib/enterprise-api-security/guard', () => ({
+  verifyFoundationApiRequest: async () => ({
+    ok: true, credentialId: 'test-credential', identityId: 'test-identity', correlationId: 'test-correlation',
+  }),
 }))
 
 beforeEach(() => {

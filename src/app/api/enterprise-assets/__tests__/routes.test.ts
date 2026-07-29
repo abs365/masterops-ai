@@ -2,6 +2,15 @@
 // Supabase boundary (createServiceClient) is swapped for the in-memory fake
 // via vi.mock — everything else (parsing, validation, error → status mapping)
 // runs exactly as it would in production.
+//
+// EA-003's auth guard is also stubbed here, deliberately: these tests exist
+// to prove EA-001's own business logic, independent of the auth layer now
+// sitting in front of it — the same isolation principle already applied to
+// createServiceClient. Guard correctness itself (credential validation,
+// scope enforcement, denial paths) has its own dedicated test suite in
+// src/lib/enterprise-api-security/__tests__/, and the wiring between the two
+// is proven separately by src/lib/enterprise-api-security/__tests__/route-integration.test.ts,
+// which uses the REAL guard against these same route handlers.
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { NextRequest } from 'next/server'
 import { FakeEnterpriseAssetDb } from '@/lib/enterprise-assets/__tests__/fake-db-client'
@@ -10,6 +19,12 @@ let fake: FakeEnterpriseAssetDb
 
 vi.mock('@/lib/supabase/server', () => ({
   createServiceClient: async () => fake,
+}))
+
+vi.mock('@/lib/enterprise-api-security/guard', () => ({
+  verifyFoundationApiRequest: async () => ({
+    ok: true, credentialId: 'test-credential', identityId: 'test-identity', correlationId: 'test-correlation',
+  }),
 }))
 
 beforeEach(() => {

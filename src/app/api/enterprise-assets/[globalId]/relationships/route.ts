@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { validateRelationshipInput } from '@/lib/enterprise-assets/validation'
 import { createRelationship, listRelationships } from '@/lib/enterprise-assets/repository'
 import { errorResponse } from '@/lib/enterprise-assets/http'
+import { verifyFoundationApiRequest } from '@/lib/enterprise-api-security/guard'
 
-export async function GET(_req: NextRequest, { params }: { params: Promise<{ globalId: string }> }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ globalId: string }> }) {
+  const guard = await verifyFoundationApiRequest(req, 'enterprise-assets:read')
+  if (!guard.ok) return guard.response
+
   const { globalId } = await params
 
   try {
@@ -18,6 +22,9 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ glo
 // supplies the target, e.g. POST /api/enterprise-assets/MO-PROD-000001/relationships
 // { target_global_id: 'MO-SVC-000002', relationship_type: 'depends_on' }
 export async function POST(req: NextRequest, { params }: { params: Promise<{ globalId: string }> }) {
+  const guard = await verifyFoundationApiRequest(req, 'enterprise-assets:write')
+  if (!guard.ok) return guard.response
+
   const { globalId } = await params
   const body = await req.json().catch(() => null)
   const merged = { ...(body ?? {}), source_global_id: globalId }

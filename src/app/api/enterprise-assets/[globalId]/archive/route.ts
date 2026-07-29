@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { archiveAsset } from '@/lib/enterprise-assets/repository'
 import { errorResponse } from '@/lib/enterprise-assets/http'
 import { isNonEmptyString } from '@/lib/enterprise-assets/validation'
+import { verifyFoundationApiRequest } from '@/lib/enterprise-api-security/guard'
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ globalId: string }> }) {
+  const guard = await verifyFoundationApiRequest(req, 'enterprise-assets:write')
+  if (!guard.ok) return guard.response
+
   const { globalId } = await params
   const body = await req.json().catch(() => ({}))
   const actor = isNonEmptyString((body as Record<string, unknown>)?.actor) ? (body as { actor: string }).actor : undefined

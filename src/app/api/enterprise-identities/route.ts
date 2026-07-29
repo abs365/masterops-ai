@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { validateCreateIdentityInput, validateListQuery } from '@/lib/enterprise-identities/validation'
 import { createIdentity, listIdentities, identityTypeExists } from '@/lib/enterprise-identities/repository'
 import { errorResponse } from '@/lib/enterprise-identities/http'
+import { verifyFoundationApiRequest } from '@/lib/enterprise-api-security/guard'
 
 export async function GET(req: NextRequest) {
+  const guard = await verifyFoundationApiRequest(req, 'enterprise-identities:read')
+  if (!guard.ok) return guard.response
+
   const result = validateListQuery(req.nextUrl.searchParams)
   if (!result.valid || !result.data) {
     return NextResponse.json({ error: result.errors.join('; ') }, { status: 400 })
@@ -18,6 +22,9 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const guard = await verifyFoundationApiRequest(req, 'enterprise-identities:write')
+  if (!guard.ok) return guard.response
+
   const body = await req.json().catch(() => null)
   const result = validateCreateIdentityInput(body)
   if (!result.valid || !result.data) {

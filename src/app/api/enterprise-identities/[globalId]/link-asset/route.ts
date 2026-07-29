@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { validateLinkAssetInput, isNonEmptyString } from '@/lib/enterprise-identities/validation'
 import { linkIdentityAsset, unlinkIdentityAsset } from '@/lib/enterprise-identities/repository'
 import { errorResponse } from '@/lib/enterprise-identities/http'
+import { verifyFoundationApiRequest } from '@/lib/enterprise-api-security/guard'
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ globalId: string }> }) {
+  const guard = await verifyFoundationApiRequest(req, 'enterprise-identities:write')
+  if (!guard.ok) return guard.response
+
   const { globalId } = await params
   const body = await req.json().catch(() => null)
   const result = validateLinkAssetInput(body)
@@ -20,6 +24,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ glo
 }
 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ globalId: string }> }) {
+  const guard = await verifyFoundationApiRequest(req, 'enterprise-identities:write')
+  if (!guard.ok) return guard.response
+
   const { globalId } = await params
   const body = await req.json().catch(() => ({}))
   const actor = isNonEmptyString((body as Record<string, unknown>)?.actor) ? (body as { actor: string }).actor : undefined
