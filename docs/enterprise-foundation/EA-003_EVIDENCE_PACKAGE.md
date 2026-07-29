@@ -34,12 +34,36 @@
 | Zero EA-001/EA-002 contract change | Confirmed by the above — same request/response shapes, same status codes for business-logic outcomes, only a new pre-check added |
 | Zero Master Growth OS change | That repository was not opened during this implementation |
 
-## NOT verified — disclosed, not hidden
+## Live Verification (2026-07-29) — see full detail below
 
-- **Migration 009 has not been applied to any live database.** No Supabase write operation was performed this pass (per instruction: "applying a production migration without explicit approval" is a stop condition — not triggered because it was never attempted, not because it was attempted and blocked).
-- **No live smoke test** — same root cause, and also correctly out of scope for an implementation-only pass with its own separate migration-execution checklist (see Production Readiness Report).
-- **Upstash Redis credentials are still not provisioned** (`UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN` absent from `.env.local`, re-confirmed this pass) — meaning in the *current* deployed environment, every Foundation API request would receive 503 (fail-closed), not "rate limiting doesn't apply." This is the correct, designed behavior, but it means the routes are not actually *usable* until this is provisioned — a real operational prerequisite, named in the Production Readiness Report, not a defect in this implementation.
-- **No credential-cleanup/expiry background job** — expired credentials remain in the `active` status column until someone explicitly revokes them or the real-time expiry check (verified working) denies them at request time. Not required by the approved design.
+**Migration 009 applied to the live production Supabase project (`ijalvgwopvrnhlizhdqw`) on 2026-07-29, after a corrective commit (`231830f`) restored two shared build prerequisites (`src/lib/rate-limit.ts`, `package.json`/`package-lock.json` @upstash+vitest entries) that an earlier commit-splitting pass had disclosed-but-not-yet-tested as missing — the gap surfaced as a real Vercel build failure on the first deployment attempt, root-caused via actual build logs, fixed via a forward-only commit, verified via a from-scratch clean clone before re-pushing.** All live smoke-test checklist items passed. This section supersedes the "NOT verified" caveats below regarding live application.
+
+## NOT verified at original build time — since verified live, 2026-07-29 (see "Live Verification" above)
+
+- ~~Migration 009 has not been applied to any live database.~~ **Verified live 2026-07-29.**
+- ~~No live smoke test.~~ **Executed live, full checklist, see below.**
+- ~~Upstash Redis credentials are still not provisioned.~~ **Provisioned and verified live** — a dedicated Upstash database was created, confirmed via a real Redis round-trip and via `rate_limit_outcome: 'allowed'` appearing in real production audit-log rows (never `'unavailable'`).
+- **No credential-cleanup/expiry background job** — still true, still not required by the approved design.
+
+## Live Verification Detail (2026-07-29)
+
+Executed via a combination of the Supabase Management API (bootstrap identity/credential creation, since the API itself is now correctly protected and has no unauthenticated admin-issuance endpoint — this is the exact bootstrap path the approved design named) and real HTTP requests against the deployed production app (`masterops-ai.vercel.app`), with explicit user authorization confirmed at each stage (environment readiness, then deployment, then migration/smoke-tests).
+
+| # | Check | Result |
+|---|---|---|
+| — | Migration | 3 tables, 3 functions, 0 RLS policies — confirmed live, matches design |
+| — | Deployment | Real Vercel build succeeded (commit `231830f`); confirmed live via direct HTTP check before any further action |
+| 1 | No credential | 401, real HTTP request to `masterops-ai.vercel.app/api/enterprise-assets` |
+| 2 | Valid credential, correct scope, read | 200 |
+| 3 | Valid credential, correct scope, write | 201, real asset created (`MO-AUTO-000002`) with full correct response body |
+| 4 | Same credential, cross-capability (EA-002 write) | 201, real identity created (`ID-PERSON-000002`) — confirms one credential can legitimately hold multiple scopes across both capabilities |
+| 5 | Valid credential, wrong scope | 403, generic message, no scope details leaked |
+| 6 | Request audit | 5 real rows, each with correct `result`/`denial_reason`/`status_code`/`capability`/`operation` — verified by direct query, not assumed |
+| 7 | Revocation | Revoked a real credential via `revoke_enterprise_api_credential`; the same credential immediately returned 401 on the next real HTTP request |
+| 8 | RLS on `enterprise_api_credentials` | Anon key direct read returned zero rows — genuine denial, not just "no policy exists in the SQL," confirmed via the real PostgREST layer |
+| 9 | Rate limiter genuinely active | `rate_limit_outcome` in real audit rows shows `'allowed'`, never `'unavailable'` — proves Upstash is wired in production, not just locally |
+
+**Result: 9/9 PASS.** All test data (2 identities, 1 asset, 2 credentials, their audit/event/request-log rows) deleted after evidence capture — confirmed 0 rows remaining in every affected table post-cleanup.
 
 ## Files changed / added (this pass only — full detail in Implementation Progress)
 
